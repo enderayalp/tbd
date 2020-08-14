@@ -1,7 +1,9 @@
 package com.codingsession.tbd.service;
 
 
-import com.codingsession.tbd.model.Order;
+import com.codingsession.tbd.api.model.Order;
+import com.codingsession.tbd.converter.OrderConverter;
+import com.codingsession.tbd.model.OrderDto;
 import com.codingsession.tbd.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,14 +15,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderConverter orderConverter;
 
-    public Optional<Order> findOrderByOrdernumber(String ordernumber) {
-        return Optional.ofNullable(orderRepository.findByOrdernumber(ordernumber));
+    public Optional<Order> findOrderByOrderId(int orderid) {
+        Optional<OrderDto> orderById = orderRepository.findById(orderid);
+        return orderById.map(orderConverter::convertToOrder);
+
     }
 
-    public Order submitOrder(Order order) {
+    public Optional<Order> submitOrder(Order order) {
         try {
-            return orderRepository.save(order);
+            OrderDto orderDto = orderConverter.convertToOrderDto(order);
+            return Optional.ofNullable(orderConverter.convertToOrder(orderRepository.save(orderDto)));
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException();
         }

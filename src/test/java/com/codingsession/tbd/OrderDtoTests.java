@@ -1,6 +1,7 @@
 package com.codingsession.tbd;
 
-import com.codingsession.tbd.model.Order;
+
+import com.codingsession.tbd.model.OrderDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -18,22 +19,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:persistence-generic-entity.properties")
-public class OrderTests {
+public class OrderDtoTests {
 
     @Autowired
     private MockMvc mvc;
 
     @Test
-    public void findOrderByOrdnernumber_404() throws Exception {
-        mvc.perform(get("/orders/1234")
+    public void findOrderById_404() throws Exception {
+        mvc.perform(get("/orders/43634")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void submitOrder_201() throws Exception {
-        Order order = new Order();
-        order.setOrdernumber("1234");
+        OrderDto order = new OrderDto();
+        order.setProduct("Auto");
+
 
         mvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -41,7 +43,7 @@ public class OrderTests {
                 .content(asJsonString(order)))
                 .andExpect(status().isAccepted());
 
-        mvc.perform(get("/orders/1234")
+        mvc.perform(get("/orders/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
