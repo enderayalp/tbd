@@ -1,7 +1,7 @@
-package com.codingsession.tbd.order.controller;
+package com.codingsession.tbd.controller;
 
 import com.codingsession.tbd.model.Order;
-import com.codingsession.tbd.order.service.OrderService;
+import com.codingsession.tbd.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

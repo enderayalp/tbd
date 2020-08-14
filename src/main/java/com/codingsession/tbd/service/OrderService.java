@@ -1,4 +1,4 @@
-package com.codingsession.tbd.order.service;
+package com.codingsession.tbd.service;
 
 
 import com.codingsession.tbd.model.Order;
