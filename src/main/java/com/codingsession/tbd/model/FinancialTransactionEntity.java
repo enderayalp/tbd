@@ -29,7 +29,7 @@ public class FinancialTransactionEntity implements Serializable {
     @Column(name = "amount")
     private int amount;
 
-    @Column(name = "nonce")
+    @Column(name = "nonce", unique = true)
     private UUID nonce;
 
 }

@@ -18,7 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,14 +51,54 @@ public class FinancialTransactionTests {
                 .sender(SENDER)
                 .receiver(RECEIVER)
                 .amount(createAmount(500))
-                .nonce(UUID.randomUUID());
-
+                .nonce(java.util.UUID.randomUUID());
 
         mvc.perform(post("/sendMoney")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(financialTransaction)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void transactionNotCreatedNotEnoughCredit() throws Exception {
+        FinancialTransaction financialTransaction = new FinancialTransaction();
+
+        financialTransaction
+                .sender(SENDER)
+                .receiver(RECEIVER)
+                .amount(createAmount(600))
+                .nonce(java.util.UUID.randomUUID());
+
+        mvc.perform(post("/sendMoney")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(financialTransaction)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void sameTransactionForbidden() throws Exception {
+        FinancialTransaction financialTransaction = new FinancialTransaction();
+
+        financialTransaction
+                .sender(SENDER)
+                .receiver(RECEIVER)
+                .amount(createAmount(200))
+                .nonce(java.util.UUID.randomUUID());
+
+        mvc.perform(post("/sendMoney")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(financialTransaction)))
+                .andExpect(status().isCreated());
+
+        mvc.perform(post("/sendMoney")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(financialTransaction)))
+                .andExpect(status().is4xxClientError());
+
     }
 
     private Amount createAmount(int value) {

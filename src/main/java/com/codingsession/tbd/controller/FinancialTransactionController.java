@@ -3,6 +3,7 @@ package com.codingsession.tbd.controller;
 
 import com.codingsession.tbd.api.model.FinancialTransaction;
 import com.codingsession.tbd.api.server.SendMoneyApi;
+import com.codingsession.tbd.exception.DuplicateTransactionException;
 import com.codingsession.tbd.exception.NotEnoughCreditException;
 import com.codingsession.tbd.service.FinancialTransactionService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class FinancialTransactionController implements SendMoneyApi {
         try {
             financialTransactionService.sendMoney(financialTransaction);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (NotEnoughCreditException e) {
-            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (NotEnoughCreditException | DuplicateTransactionException e) {
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

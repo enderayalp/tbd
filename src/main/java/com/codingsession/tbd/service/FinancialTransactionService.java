@@ -3,12 +3,14 @@ package com.codingsession.tbd.service;
 
 import com.codingsession.tbd.api.model.FinancialTransaction;
 import com.codingsession.tbd.converter.FinancialTransactionConverter;
+import com.codingsession.tbd.exception.DuplicateTransactionException;
 import com.codingsession.tbd.exception.NotEnoughCreditException;
 import com.codingsession.tbd.model.CreditLineEntity;
 import com.codingsession.tbd.model.FinancialTransactionEntity;
 import com.codingsession.tbd.repository.CreditLineRepository;
 import com.codingsession.tbd.repository.FinancialTransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,10 +24,14 @@ public class FinancialTransactionService {
     private final CreditLineRepository creditLineRepository;
     private final FinancialTransactionConverter financialTransactionConverter;
 
-    public Optional<FinancialTransaction> sendMoney(FinancialTransaction financialTransaction) throws NotEnoughCreditException {
+    public FinancialTransaction sendMoney(FinancialTransaction financialTransaction) throws NotEnoughCreditException, DuplicateTransactionException {
         checkCredit(financialTransaction);
-
-        return Optional.empty();
+        FinancialTransactionEntity entity = financialTransactionConverter.convertToEntity(financialTransaction);
+        try {
+            return financialTransactionConverter.convertToVO(financialTransactionRepository.save(entity));
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateTransactionException();
+        }
     }
 
     private void checkCredit(FinancialTransaction financialTransaction) throws NotEnoughCreditException {
