@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @Table(name = "customerorder")
-public class OrderDto implements Serializable {
+public class OrderEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

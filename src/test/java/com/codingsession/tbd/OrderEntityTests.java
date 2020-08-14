@@ -1,7 +1,7 @@
 package com.codingsession.tbd;
 
 
-import com.codingsession.tbd.model.OrderDto;
+import com.codingsession.tbd.model.OrderEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -19,10 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:persistence-generic-entity.properties")
-public class OrderDtoTests {
+public class OrderEntityTests {
 
     @Autowired
     private MockMvc mvc;
+
 
     @Test
     public void findOrderById_404() throws Exception {
@@ -33,7 +34,7 @@ public class OrderDtoTests {
 
     @Test
     public void submitOrder_201() throws Exception {
-        OrderDto order = new OrderDto();
+        OrderEntity order = new OrderEntity();
         order.setProduct("Auto");
 
 

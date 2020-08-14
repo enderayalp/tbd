@@ -1,27 +1,27 @@
 package com.codingsession.tbd.converter;
 
 import com.codingsession.tbd.api.model.Order;
-import com.codingsession.tbd.model.OrderDto;
+import com.codingsession.tbd.model.OrderEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderConverter {
-    public Order convertToOrder(OrderDto orderDto) {
-        if (orderDto == null) {
+    public Order convertToOrder(OrderEntity orderEntity) {
+        if (orderEntity == null) {
             return null;
         }
         Order order = new Order();
-        order.setId(orderDto.getId());
-        order.setProduct(orderDto.getProduct());
+        order.setId(orderEntity.getId());
+        order.setProduct(orderEntity.getProduct());
         return order;
     }
 
-    public OrderDto convertToOrderDto(Order order) {
+    public OrderEntity convertToOrderDto(Order order) {
         if (order == null) {
             return null;
         }
-        OrderDto orderDto = new OrderDto();
-        orderDto.setProduct(order.getProduct());
-        return orderDto;
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setProduct(order.getProduct());
+        return orderEntity;
     }
 }
