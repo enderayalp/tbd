@@ -53,7 +53,7 @@ public class FinancialTransactionTests {
                 .amount(createAmount(500))
                 .nonce(java.util.UUID.randomUUID());
 
-        mvc.perform(post("/sendMoney")
+        mvc.perform(post("/money")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(financialTransaction)))
@@ -70,7 +70,7 @@ public class FinancialTransactionTests {
                 .amount(createAmount(600))
                 .nonce(java.util.UUID.randomUUID());
 
-        mvc.perform(post("/sendMoney")
+        mvc.perform(post("/money")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(financialTransaction)))
@@ -87,13 +87,13 @@ public class FinancialTransactionTests {
                 .amount(createAmount(200))
                 .nonce(java.util.UUID.randomUUID());
 
-        mvc.perform(post("/sendMoney")
+        mvc.perform(post("/money")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(financialTransaction)))
                 .andExpect(status().isCreated());
 
-        mvc.perform(post("/sendMoney")
+        mvc.perform(post("/money")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(financialTransaction)))

@@ -9,7 +9,9 @@ import com.codingsession.tbd.model.CreditLineEntity;
 import com.codingsession.tbd.model.FinancialTransactionEntity;
 import com.codingsession.tbd.repository.CreditLineRepository;
 import com.codingsession.tbd.repository.FinancialTransactionRepository;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +20,12 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FinancialTransactionService {
-    public static final int ZERO = 0;
-    private final FinancialTransactionRepository financialTransactionRepository;
-    private final CreditLineRepository creditLineRepository;
-    private final FinancialTransactionConverter financialTransactionConverter;
+    static final int ZERO = 0;
+    FinancialTransactionRepository financialTransactionRepository;
+    CreditLineRepository creditLineRepository;
+    FinancialTransactionConverter financialTransactionConverter;
 
     public FinancialTransaction sendMoney(FinancialTransaction financialTransaction) throws NotEnoughCreditException, DuplicateTransactionException {
         checkCredit(financialTransaction);
@@ -42,13 +45,14 @@ public class FinancialTransactionService {
         if (creditLineEntity.isPresent()) {
             creditline = creditLineEntity.get().getCreditLine();
         }
-        int credit = calculateCredit(transactions) + creditline;
+
+        int credit = calculateCreditByTransacations(transactions) + creditline;
         if (financialTransaction.getAmount().getValue() > credit) {
             throw new NotEnoughCreditException();
         }
     }
 
-    private int calculateCredit(List<FinancialTransactionEntity> transactions) {
+    private int calculateCreditByTransacations(List<FinancialTransactionEntity> transactions) {
         return transactions.stream()
                 .map(FinancialTransactionEntity::getAmount)
                 .mapToInt(Integer::intValue)
